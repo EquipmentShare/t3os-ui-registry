@@ -3,10 +3,12 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import {
   AccountWorkspaceMenu,
-  filterAccountWorkspaces,
-  initials,
   type AccountWorkspaceMenuProps,
 } from "./account-workspace-menu";
+import {
+  filterAccountWorkspaces,
+  initials,
+} from "./account-workspace-menu-model";
 
 const props: AccountWorkspaceMenuProps = {
   currentWorkspaceId: "ws-field-ops",

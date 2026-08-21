@@ -1,7 +1,8 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- Workspace and identity-provider images can use arbitrary HTTPS hosts. */
+
 import {
-  type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
   useEffect,
   useId,
@@ -9,55 +10,20 @@ import {
   useRef,
   useState,
 } from "react";
+import {
+  filterAccountWorkspaces,
+  initials,
+  type AccountWorkspaceMenuProps,
+  type AccountWorkspaceMenuUser,
+  type AccountWorkspaceMenuWorkspace,
+} from "./account-workspace-menu-model";
 import styles from "./account-workspace-menu.module.css";
 
-export interface AccountWorkspaceMenuWorkspace {
-  id: string;
-  name: string;
-  description?: string;
-  logoUrl?: string;
-  href: string;
-}
-
-export interface AccountWorkspaceMenuUser {
-  name: string;
-  email?: string;
-  pictureUrl?: string;
-}
-
-export interface AccountWorkspaceMenuProps {
-  currentWorkspaceId: string;
-  workspaces: readonly AccountWorkspaceMenuWorkspace[];
-  user: AccountWorkspaceMenuUser;
-  connectWorkspaceHref: string;
-  signOutAction: string;
-  className?: string;
-  defaultOpen?: boolean;
-  style?: CSSProperties;
-}
-
-export function initials(value: string) {
-  const words = value.trim().split(/\s+/).filter(Boolean);
-  return (
-    words
-      .slice(0, 2)
-      .map((word) => word[0]?.toUpperCase())
-      .join("") || "?"
-  );
-}
-
-export function filterAccountWorkspaces(
-  workspaces: readonly AccountWorkspaceMenuWorkspace[],
-  query: string,
-) {
-  const normalized = query.trim().toLocaleLowerCase();
-  if (!normalized) return workspaces;
-  return workspaces.filter((workspace) =>
-    [workspace.name, workspace.description, workspace.id]
-      .filter(Boolean)
-      .some((value) => value!.toLocaleLowerCase().includes(normalized)),
-  );
-}
+export type {
+  AccountWorkspaceMenuProps,
+  AccountWorkspaceMenuUser,
+  AccountWorkspaceMenuWorkspace,
+} from "./account-workspace-menu-model";
 
 function SearchIcon() {
   return (
@@ -88,8 +54,9 @@ function WorkspaceAvatar({
   compact?: boolean;
 }) {
   const className = `${styles.avatar} ${styles.workspaceAvatar}${compact ? ` ${styles.compactAvatar}` : ""}`;
-  if (workspace.logoUrl)
+  if (workspace.logoUrl) {
     return <img className={className} src={workspace.logoUrl} alt="" />;
+  }
   return (
     <span
       className={`${className} ${styles.workspaceFallback}`}

@@ -45,6 +45,10 @@
   cursor: pointer;
 }
 
+.trigger:hover {
+  background: #fafafa;
+}
+
 .trigger:focus-visible,
 .workspaceRow:focus-visible,
 .footerAction:focus-visible,
@@ -148,6 +152,11 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.menuTitle:hover {
+  background: transparent;
+  color: #3f3f46;
 }
 .menuTitle svg,
 .search svg {

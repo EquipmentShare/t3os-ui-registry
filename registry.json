@@ -17,6 +17,10 @@
         {
           "path": "registry/account-workspace-menu/account-workspace-menu.module.css",
           "type": "registry:component"
+        },
+        {
+          "path": "registry/account-workspace-menu/account-workspace-menu-model.ts",
+          "type": "registry:component"
         }
       ],
       "docs": "Supply display-safe workspace and user metadata from your server adapter. Never pass tokens or secrets. Each workspace href should begin the application's workspace-targeted OAuth flow; signOutAction must accept POST."
