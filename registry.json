@@ -1,0 +1,25 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "t3os-ui-registry",
+  "homepage": "https://github.com/EquipmentShare/t3os-ui-registry",
+  "items": [
+    {
+      "name": "account-workspace-menu",
+      "type": "registry:block",
+      "title": "Account Workspace Menu",
+      "description": "An accessible account and workspace switcher for T3OS connected applications.",
+      "author": "EquipmentShare",
+      "files": [
+        {
+          "path": "registry/account-workspace-menu/account-workspace-menu.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/account-workspace-menu/account-workspace-menu.module.css",
+          "type": "registry:component"
+        }
+      ],
+      "docs": "Supply display-safe workspace and user metadata from your server adapter. Never pass tokens or secrets. Each workspace href should begin the application's workspace-targeted OAuth flow; signOutAction must accept POST."
+    }
+  ]
+}
