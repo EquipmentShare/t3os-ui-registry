@@ -97,11 +97,9 @@ export function AccountWorkspaceMenu({
   style,
 }: AccountWorkspaceMenuProps) {
   const [open, setOpen] = useState(defaultOpen);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const menuId = useId();
   const current = workspaces.find(
     (workspace) => workspace.id === currentWorkspaceId,
@@ -119,7 +117,6 @@ export function AccountWorkspaceMenu({
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key !== "Escape") return;
       setOpen(false);
-      setSearchOpen(false);
       setQuery("");
       triggerRef.current?.focus();
     };
@@ -131,15 +128,10 @@ export function AccountWorkspaceMenu({
     };
   }, [open]);
 
-  useEffect(() => {
-    if (searchOpen) inputRef.current?.focus();
-  }, [searchOpen]);
-
   if (!current) return null;
 
   const close = () => {
     setOpen(false);
-    setSearchOpen(false);
     setQuery("");
   };
 
@@ -191,7 +183,6 @@ export function AccountWorkspaceMenu({
       >
         <WorkspaceAvatar workspace={current} compact />
         <span className={styles.currentName}>{current.name}</span>
-        <UserAvatar user={user} />
         <ChevronIcon open={open} />
       </button>
 
@@ -203,30 +194,16 @@ export function AccountWorkspaceMenu({
           aria-label="Account and workspaces"
           onKeyDown={moveMenuFocus}
         >
-          <div className={styles.menuHeader}>
-            {searchOpen ? (
-              <label className={styles.search}>
-                <span className={styles.srOnly}>Search workspaces</span>
-                <input
-                  ref={inputRef}
-                  type="search"
-                  placeholder="Search workspaces…"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                />
-                <SearchIcon />
-              </label>
-            ) : (
-              <button
-                className={styles.menuTitle}
-                type="button"
-                onClick={() => setSearchOpen(true)}
-              >
-                <span>Your workspaces</span>
-                <SearchIcon />
-              </button>
-            )}
-          </div>
+          <label className={styles.search}>
+            <SearchIcon />
+            <span className={styles.srOnly}>Search workspaces</span>
+            <input
+              type="search"
+              placeholder="Find a workspace…"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+            />
+          </label>
 
           <div className={styles.workspaceList}>
             {filtered.length ? (
@@ -244,45 +221,38 @@ export function AccountWorkspaceMenu({
                     <WorkspaceAvatar workspace={workspace} />
                     <span className={styles.workspaceCopy}>
                       <strong>{workspace.name}</strong>
-                      <small>
-                        {workspace.description ||
-                          (isCurrent
-                            ? "Current workspace"
-                            : "Connected workspace")}
-                      </small>
+                      <small>{workspace.id}</small>
                     </span>
-                    {isCurrent && (
-                      <span
-                        className={styles.check}
-                        aria-label="Current workspace"
-                      >
-                        ✓
-                      </span>
-                    )}
                   </a>
                 );
               })
             ) : (
               <p className={styles.empty}>No matching workspaces</p>
             )}
-          </div>
-
-          <div className={styles.menuFooter}>
             <a
-              className={styles.footerAction}
+              className={styles.workspaceRow}
               href={connectWorkspaceHref}
               role="menuitem"
               onClick={close}
             >
-              <span aria-hidden="true">＋</span>
-              Connect another workspace
+              <span
+                className={`${styles.avatar} ${styles.workspaceAvatar} ${styles.workspaceFallback}`}
+                aria-hidden="true"
+              >
+                +
+              </span>
+              <span className={styles.workspaceCopy}>
+                <strong>Connect workspace</strong>
+                <small>Add another T3OS workspace</small>
+              </span>
             </a>
-            <div className={styles.divider} />
+          </div>
+
+          <div className={styles.menuFooter}>
             <div className={styles.accountRow}>
               <UserAvatar user={user} />
               <span className={styles.accountCopy}>
                 <strong>{user.name}</strong>
-                <small>{user.email || "Signed in with T3"}</small>
               </span>
               <form action={signOutAction} method="post">
                 <button
