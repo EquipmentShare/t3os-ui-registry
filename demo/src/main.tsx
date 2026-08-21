@@ -5,21 +5,18 @@ import "./styles.css";
 
 const workspaces = [
   {
-    id: "field-ops",
+    id: "da3b0218-ddf1-4faf-ac0e-a93718de60aa",
     name: "Field Operations",
-    description: "Primary workspace",
     href: "#field-ops",
   },
   {
-    id: "demo",
-    name: "Demo — Account",
-    description: "Training and demonstration",
+    id: "62640fb8-1a72-4fb0-9a31-48bc5f427f21",
+    name: "Demo Account",
     href: "#demo",
   },
   {
-    id: "training",
+    id: "4ae55417-2be1-42e1-a320-60246136d40d",
     name: "Training Workspace",
-    description: "Demonstration workspace",
     href: "#training",
   },
 ];
@@ -43,7 +40,7 @@ function Demo() {
           <a href="#automation">Automation</a>
         </nav>
         <AccountWorkspaceMenu
-          currentWorkspaceId="field-ops"
+          currentWorkspaceId="da3b0218-ddf1-4faf-ac0e-a93718de60aa"
           workspaces={workspaces}
           user={{ name: "Alex Morgan", email: "alex@example.com" }}
           connectWorkspaceHref="#connect"

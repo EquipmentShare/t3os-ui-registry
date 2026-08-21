@@ -47,12 +47,16 @@ describe("AccountWorkspaceMenu", () => {
 
     const menu = screen.getByRole("menu", { name: "Account and workspaces" });
     expect(within(menu).getByText("Alex Morgan")).toBeVisible();
-    expect(within(menu).getByText("alex@example.com")).toBeVisible();
+    expect(
+      within(menu).queryByText("alex@example.com"),
+    ).not.toBeInTheDocument();
+    expect(within(menu).getByText("ws-field-ops")).toBeVisible();
+    expect(within(menu).getByText("ws-demo")).toBeVisible();
     expect(
       within(menu).getByRole("menuitem", { name: /Training Workspace/ }),
     ).toHaveAttribute("href", "/sign-in?workspace=ws-demo");
     expect(
-      within(menu).getByRole("menuitem", { name: "Connect another workspace" }),
+      within(menu).getByRole("menuitem", { name: /Connect workspace/ }),
     ).toHaveAttribute("href", "/sign-in?choose=1");
     expect(
       within(menu).getByRole("menuitem", { name: "Sign out" }).closest("form"),
@@ -63,7 +67,6 @@ describe("AccountWorkspaceMenu", () => {
     const user = userEvent.setup();
     render(<AccountWorkspaceMenu {...props} defaultOpen />);
 
-    await user.click(screen.getByRole("button", { name: "Your workspaces" }));
     await user.type(
       screen.getByRole("searchbox", { name: "Search workspaces" }),
       "primary",

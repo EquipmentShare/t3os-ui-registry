@@ -15,7 +15,7 @@ pnpm dlx shadcn@latest add EquipmentShare/t3os-ui-registry/account-workspace-men
 
 ## Account workspace menu
 
-The menu combines current workspace context, workspace switching, account identity, and local application sign-out. Its interface accepts display-safe data and ordinary URLs:
+The compact menu combines current workspace context, workspace search and switching, account identity, and local application sign-out. Workspace IDs appear beneath names so developers and support teams can identify the exact installation context. Its interface accepts display-safe data and ordinary URLs:
 
 ```tsx
 <AccountWorkspaceMenu
