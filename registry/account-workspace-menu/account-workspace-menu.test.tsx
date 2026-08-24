@@ -53,8 +53,13 @@ describe("AccountWorkspaceMenu", () => {
     expect(within(menu).getByText("ws-field-ops")).toBeVisible();
     expect(within(menu).getByText("ws-demo")).toBeVisible();
     expect(
-      within(menu).getByRole("menuitem", { name: /Training Workspace/ }),
+      within(menu).getByRole("menuitemradio", {
+        name: /Training Workspace/,
+      }),
     ).toHaveAttribute("href", "/sign-in?workspace=ws-demo");
+    expect(
+      within(menu).getByRole("menuitemradio", { name: /Field Operations/ }),
+    ).toHaveAttribute("aria-checked", "true");
     expect(
       within(menu).getByRole("menuitem", { name: /Connect workspace/ }),
     ).toHaveAttribute("href", "/sign-in?choose=1");
@@ -72,10 +77,10 @@ describe("AccountWorkspaceMenu", () => {
       "primary",
     );
     expect(
-      screen.getByRole("menuitem", { name: /Field Operations/ }),
+      screen.getByRole("menuitemradio", { name: /Field Operations/ }),
     ).toBeVisible();
     expect(
-      screen.queryByRole("menuitem", { name: /Training Workspace/ }),
+      screen.queryByRole("menuitemradio", { name: /Training Workspace/ }),
     ).not.toBeInTheDocument();
 
     await user.keyboard("{Escape}");
@@ -166,8 +171,24 @@ describe("AccountWorkspaceMenu", () => {
       screen.getByRole("searchbox", { name: "Search workspaces" }),
     ).toHaveValue("");
     expect(
-      screen.getByRole("menuitem", { name: /Training Workspace/ }),
+      screen.getByRole("menuitemradio", { name: /Training Workspace/ }),
     ).toBeVisible();
+  });
+
+  it("stays open when a non-interactive menu area is clicked", async () => {
+    const user = userEvent.setup();
+    render(<AccountWorkspaceMenu {...props} defaultOpen />);
+
+    await user.type(
+      screen.getByRole("searchbox", { name: "Search workspaces" }),
+      "missing",
+    );
+    await user.click(screen.getByText("No matching workspaces"));
+
+    expect(screen.getByRole("menu")).toBeVisible();
+    expect(
+      screen.getByRole("searchbox", { name: "Search workspaces" }),
+    ).toHaveValue("missing");
   });
 
   it("renders nothing when current workspace data is absent", () => {

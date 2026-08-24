@@ -109,6 +109,7 @@ export function AccountWorkspaceMenu({
   const [query, setQuery] = useState("");
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const pointerDownInsideRef = useRef(false);
   const menuId = useId();
   const current = workspaces.find(
     (workspace) => workspace.id === currentWorkspaceId,
@@ -160,7 +161,9 @@ export function AccountWorkspaceMenu({
   const moveMenuFocus = (event: ReactKeyboardEvent<HTMLElement>) => {
     if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
     const items = Array.from(
-      rootRef.current?.querySelectorAll<HTMLElement>("[role='menuitem']") ?? [],
+      rootRef.current?.querySelectorAll<HTMLElement>(
+        "[role='menuitem'], [role='menuitemradio']",
+      ) ?? [],
     );
     if (!items.length) return;
     event.preventDefault();
@@ -181,8 +184,15 @@ export function AccountWorkspaceMenu({
       className={`${styles.root}${className ? ` ${className}` : ""}`}
       ref={rootRef}
       style={style}
+      onPointerDownCapture={() => {
+        pointerDownInsideRef.current = true;
+        queueMicrotask(() => {
+          pointerDownInsideRef.current = false;
+        });
+      }}
       onBlur={(event) => {
         if (event.currentTarget.contains(event.relatedTarget)) return;
+        if (pointerDownInsideRef.current) return;
         close();
       }}
     >
@@ -191,7 +201,7 @@ export function AccountWorkspaceMenu({
         className={styles.trigger}
         type="button"
         aria-label={`Account and workspace: ${current.name}`}
-        aria-controls={menuId}
+        aria-controls={open ? menuId : undefined}
         aria-expanded={open}
         aria-haspopup="menu"
         onClick={() => setOpen((value) => !value)}
@@ -201,7 +211,9 @@ export function AccountWorkspaceMenu({
             setOpen(true);
             requestAnimationFrame(() =>
               rootRef.current
-                ?.querySelector<HTMLElement>("[role='menuitem']")
+                ?.querySelector<HTMLElement>(
+                  "[role='menuitem'], [role='menuitemradio']",
+                )
                 ?.focus(),
             );
           }
@@ -213,7 +225,7 @@ export function AccountWorkspaceMenu({
       </button>
 
       {open && (
-        <div className={styles.menu}>
+        <div className={styles.menu} id={menuId}>
           <label className={styles.search}>
             <SearchIcon />
             <span className={styles.srOnly}>Search workspaces</span>
@@ -226,7 +238,6 @@ export function AccountWorkspaceMenu({
           </label>
 
           <div
-            id={menuId}
             role="menu"
             aria-label="Account and workspaces"
             onKeyDown={moveMenuFocus}
@@ -240,8 +251,8 @@ export function AccountWorkspaceMenu({
                       className={`${styles.workspaceRow}${isCurrent ? ` ${styles.currentWorkspace}` : ""}`}
                       href={workspace.href}
                       key={workspace.id}
-                      role="menuitem"
-                      aria-current={isCurrent ? "page" : undefined}
+                      role="menuitemradio"
+                      aria-checked={isCurrent}
                       onClick={close}
                     >
                       <WorkspaceAvatar workspace={workspace} />
@@ -280,7 +291,12 @@ export function AccountWorkspaceMenu({
                 <span className={styles.accountCopy}>
                   <strong>{user.name}</strong>
                 </span>
-                <form action={signOutAction} method="post" role="none">
+                <form
+                  action={signOutAction}
+                  method="post"
+                  role="none"
+                  onSubmit={close}
+                >
                   <button
                     className={styles.signOut}
                     type="submit"
