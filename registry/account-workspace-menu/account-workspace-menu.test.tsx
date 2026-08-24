@@ -87,6 +87,46 @@ describe("AccountWorkspaceMenu", () => {
     ).toHaveFocus();
   });
 
+  it("keeps search-field navigation keys in the search field", async () => {
+    const user = userEvent.setup();
+    render(<AccountWorkspaceMenu {...props} defaultOpen />);
+
+    const search = screen.getByRole("searchbox", {
+      name: "Search workspaces",
+    });
+    await user.type(search, "field");
+    await user.keyboard("{Home}");
+
+    expect(search).toHaveFocus();
+    expect(search).toHaveValue("field");
+    expect(search).toHaveProperty("selectionStart", 0);
+  });
+
+  it("clears a stale search after an outside click", async () => {
+    const user = userEvent.setup();
+    render(<AccountWorkspaceMenu {...props} defaultOpen />);
+
+    await user.type(
+      screen.getByRole("searchbox", { name: "Search workspaces" }),
+      "missing",
+    );
+    expect(screen.getByText("No matching workspaces")).toBeVisible();
+
+    await user.click(document.body);
+    await user.click(
+      screen.getByRole("button", {
+        name: "Account and workspace: Field Operations",
+      }),
+    );
+
+    expect(
+      screen.getByRole("searchbox", { name: "Search workspaces" }),
+    ).toHaveValue("");
+    expect(
+      screen.getByRole("menuitem", { name: /Training Workspace/ }),
+    ).toBeVisible();
+  });
+
   it("renders nothing when current workspace data is absent", () => {
     const { container } = render(
       <AccountWorkspaceMenu {...props} currentWorkspaceId="unknown" />,
