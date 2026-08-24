@@ -63,7 +63,7 @@ describe("AccountWorkspaceMenu", () => {
     expect(signOut.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("filters workspaces and closes on Escape", async () => {
+  it("clears a search before Escape closes the menu", async () => {
     const user = userEvent.setup();
     render(<AccountWorkspaceMenu {...props} defaultOpen />);
 
@@ -77,6 +77,12 @@ describe("AccountWorkspaceMenu", () => {
     expect(
       screen.queryByRole("menuitem", { name: /Training Workspace/ }),
     ).not.toBeInTheDocument();
+
+    await user.keyboard("{Escape}");
+    expect(
+      screen.getByRole("searchbox", { name: "Search workspaces" }),
+    ).toHaveValue("");
+    expect(screen.getByRole("menu")).toBeVisible();
 
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("menu")).not.toBeInTheDocument();
