@@ -128,6 +128,15 @@ export function AccountWorkspaceMenu({
     };
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key !== "Escape") return;
+      if (
+        query &&
+        event.target instanceof HTMLInputElement &&
+        event.target.type === "search"
+      ) {
+        event.preventDefault();
+        setQuery("");
+        return;
+      }
       setOpen(false);
       setQuery("");
       triggerRef.current?.focus();
@@ -138,7 +147,7 @@ export function AccountWorkspaceMenu({
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [open, query]);
 
   if (!current) return null;
 
