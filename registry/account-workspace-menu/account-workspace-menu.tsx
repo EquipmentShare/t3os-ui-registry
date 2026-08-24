@@ -128,6 +128,7 @@ export function AccountWorkspaceMenu({
     };
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key !== "Escape") return;
+      if (!rootRef.current?.contains(event.target as Node)) return;
       if (
         query &&
         event.target instanceof HTMLInputElement &&

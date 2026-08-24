@@ -108,6 +108,28 @@ describe("AccountWorkspaceMenu", () => {
     expect(search).toHaveProperty("selectionStart", 0);
   });
 
+  it("does not handle Escape from outside the menu", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <AccountWorkspaceMenu {...props} defaultOpen />
+        <input type="search" aria-label="Page search" />
+      </>,
+    );
+
+    const menuSearch = screen.getByRole("searchbox", {
+      name: "Search workspaces",
+    });
+    await user.type(menuSearch, "primary");
+    const pageSearch = screen.getByRole("searchbox", { name: "Page search" });
+    pageSearch.focus();
+    await user.keyboard("{Escape}");
+
+    expect(pageSearch).toHaveFocus();
+    expect(menuSearch).toHaveValue("primary");
+    expect(screen.getByRole("menu")).toBeVisible();
+  });
+
   it("clears a stale search after an outside click", async () => {
     const user = userEvent.setup();
     render(<AccountWorkspaceMenu {...props} defaultOpen />);
