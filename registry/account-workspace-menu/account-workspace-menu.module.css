@@ -10,6 +10,7 @@
   --t3-menu-trigger-bg: #fff;
   --t3-menu-trigger-fg: #18181b;
   --t3-menu-trigger-border: #e4e4e7;
+  --t3-menu-mobile-top: 78px;
   position: relative;
   color: var(--t3-menu-fg);
   font-family:
@@ -284,7 +285,7 @@
   }
   .menu {
     position: fixed;
-    top: 78px;
+    top: var(--t3-menu-mobile-top);
     right: 16px;
     left: 16px;
     width: auto;
