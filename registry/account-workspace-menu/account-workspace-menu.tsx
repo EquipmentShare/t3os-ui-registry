@@ -181,6 +181,10 @@ export function AccountWorkspaceMenu({
       className={`${styles.root}${className ? ` ${className}` : ""}`}
       ref={rootRef}
       style={style}
+      onBlur={(event) => {
+        if (event.currentTarget.contains(event.relatedTarget)) return;
+        close();
+      }}
     >
       <button
         ref={triggerRef}

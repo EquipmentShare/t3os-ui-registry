@@ -108,7 +108,7 @@ describe("AccountWorkspaceMenu", () => {
     expect(search).toHaveProperty("selectionStart", 0);
   });
 
-  it("does not handle Escape from outside the menu", async () => {
+  it("does not steal focus on Escape after the menu loses focus", async () => {
     const user = userEvent.setup();
     render(
       <>
@@ -122,12 +122,27 @@ describe("AccountWorkspaceMenu", () => {
     });
     await user.type(menuSearch, "primary");
     const pageSearch = screen.getByRole("searchbox", { name: "Page search" });
-    pageSearch.focus();
+    await user.click(pageSearch);
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
     await user.keyboard("{Escape}");
 
     expect(pageSearch).toHaveFocus();
-    expect(menuSearch).toHaveValue("primary");
-    expect(screen.getByRole("menu")).toBeVisible();
+  });
+
+  it("closes when keyboard focus leaves the menu", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <AccountWorkspaceMenu {...props} defaultOpen />
+        <button type="button">Page action</button>
+      </>,
+    );
+
+    screen.getByRole("menuitem", { name: "Sign out" }).focus();
+    await user.tab();
+
+    expect(screen.getByRole("button", { name: "Page action" })).toHaveFocus();
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
   });
 
   it("clears a stale search after an outside click", async () => {
