@@ -121,7 +121,10 @@ export function AccountWorkspaceMenu({
   useEffect(() => {
     if (!open) return;
     const onPointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+      if (!rootRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+        setQuery("");
+      }
     };
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key !== "Escape") return;
@@ -196,13 +199,7 @@ export function AccountWorkspaceMenu({
       </button>
 
       {open && (
-        <div
-          id={menuId}
-          className={styles.menu}
-          role="menu"
-          aria-label="Account and workspaces"
-          onKeyDown={moveMenuFocus}
-        >
+        <div className={styles.menu}>
           <label className={styles.search}>
             <SearchIcon />
             <span className={styles.srOnly}>Search workspaces</span>
@@ -214,65 +211,72 @@ export function AccountWorkspaceMenu({
             />
           </label>
 
-          <div className={styles.workspaceList}>
-            {filtered.length ? (
-              filtered.map((workspace) => {
-                const isCurrent = workspace.id === currentWorkspaceId;
-                return (
-                  <a
-                    className={`${styles.workspaceRow}${isCurrent ? ` ${styles.currentWorkspace}` : ""}`}
-                    href={workspace.href}
-                    key={workspace.id}
-                    role="menuitem"
-                    aria-current={isCurrent ? "page" : undefined}
-                    onClick={close}
-                  >
-                    <WorkspaceAvatar workspace={workspace} />
-                    <span className={styles.workspaceCopy}>
-                      <strong>{workspace.name}</strong>
-                      <small>{workspace.id}</small>
-                    </span>
-                  </a>
-                );
-              })
-            ) : (
-              <p className={styles.empty}>No matching workspaces</p>
-            )}
-            <a
-              className={styles.workspaceRow}
-              href={connectWorkspaceHref}
-              role="menuitem"
-              onClick={close}
-            >
-              <span
-                className={`${styles.avatar} ${styles.workspaceAvatar} ${styles.workspaceFallback}`}
-                aria-hidden="true"
+          <div
+            id={menuId}
+            role="menu"
+            aria-label="Account and workspaces"
+            onKeyDown={moveMenuFocus}
+          >
+            <div className={styles.workspaceList} role="none">
+              {filtered.length ? (
+                filtered.map((workspace) => {
+                  const isCurrent = workspace.id === currentWorkspaceId;
+                  return (
+                    <a
+                      className={`${styles.workspaceRow}${isCurrent ? ` ${styles.currentWorkspace}` : ""}`}
+                      href={workspace.href}
+                      key={workspace.id}
+                      role="menuitem"
+                      aria-current={isCurrent ? "page" : undefined}
+                      onClick={close}
+                    >
+                      <WorkspaceAvatar workspace={workspace} />
+                      <span className={styles.workspaceCopy}>
+                        <strong>{workspace.name}</strong>
+                        <small>{workspace.id}</small>
+                      </span>
+                    </a>
+                  );
+                })
+              ) : (
+                <p className={styles.empty}>No matching workspaces</p>
+              )}
+              <a
+                className={styles.workspaceRow}
+                href={connectWorkspaceHref}
+                role="menuitem"
+                onClick={close}
               >
-                +
-              </span>
-              <span className={styles.workspaceCopy}>
-                <strong>Connect workspace</strong>
-                <small>Add another T3OS workspace</small>
-              </span>
-            </a>
-          </div>
-
-          <div className={styles.menuFooter}>
-            <div className={styles.accountRow}>
-              <UserAvatar user={user} />
-              <span className={styles.accountCopy}>
-                <strong>{user.name}</strong>
-              </span>
-              <form action={signOutAction} method="post">
-                <button
-                  className={styles.signOut}
-                  type="submit"
-                  role="menuitem"
+                <span
+                  className={`${styles.avatar} ${styles.workspaceAvatar} ${styles.workspaceFallback}`}
+                  aria-hidden="true"
                 >
-                  <LogoutIcon />
-                  <span>Sign out</span>
-                </button>
-              </form>
+                  +
+                </span>
+                <span className={styles.workspaceCopy}>
+                  <strong>Connect workspace</strong>
+                  <small>Add another T3OS workspace</small>
+                </span>
+              </a>
+            </div>
+
+            <div className={styles.menuFooter} role="none">
+              <div className={styles.accountRow} role="none">
+                <UserAvatar user={user} />
+                <span className={styles.accountCopy}>
+                  <strong>{user.name}</strong>
+                </span>
+                <form action={signOutAction} method="post" role="none">
+                  <button
+                    className={styles.signOut}
+                    type="submit"
+                    role="menuitem"
+                  >
+                    <LogoutIcon />
+                    <span>Sign out</span>
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
