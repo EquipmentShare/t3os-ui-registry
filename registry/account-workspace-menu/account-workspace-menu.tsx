@@ -135,7 +135,11 @@ export function AccountWorkspaceMenu({
     };
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      if (!rootRef.current?.contains(event.target as Node)) return;
+      const targetIsPageRoot =
+        event.target === document.body ||
+        event.target === document.documentElement;
+      if (!targetIsPageRoot && !rootRef.current?.contains(event.target as Node))
+        return;
       if (
         event.target instanceof HTMLInputElement &&
         event.target.type === "search" &&
@@ -184,8 +188,12 @@ export function AccountWorkspaceMenu({
         : event.key === "End"
           ? items.length - 1
           : event.key === "ArrowDown"
-            ? (activeIndex + 1 + items.length) % items.length
-            : (activeIndex - 1 + items.length) % items.length;
+            ? activeIndex === -1
+              ? 0
+              : (activeIndex + 1) % items.length
+            : activeIndex === -1
+              ? items.length - 1
+              : (activeIndex - 1 + items.length) % items.length;
     items[nextIndex]?.focus();
   };
 

@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import {
@@ -189,6 +189,22 @@ describe("AccountWorkspaceMenu", () => {
     expect(
       screen.getByRole("searchbox", { name: "Search workspaces" }),
     ).toHaveValue("missing");
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("menu")).not.toBeInTheDocument();
+  });
+
+  it("moves ArrowUp from the menu search to the last item", async () => {
+    render(<AccountWorkspaceMenu {...props} defaultOpen />);
+
+    const search = screen.getByRole("searchbox", {
+      name: "Search workspaces",
+    });
+    search.focus();
+    search.blur();
+    fireEvent.keyDown(screen.getByRole("menu"), { key: "ArrowUp" });
+
+    expect(screen.getByRole("menuitem", { name: "Sign out" })).toHaveFocus();
   });
 
   it("renders nothing when current workspace data is absent", () => {
