@@ -58,9 +58,9 @@ describe("AccountWorkspaceMenu", () => {
     expect(
       within(menu).getByRole("menuitem", { name: /Connect workspace/ }),
     ).toHaveAttribute("href", "/sign-in?choose=1");
-    expect(
-      within(menu).getByRole("menuitem", { name: "Sign out" }).closest("form"),
-    ).toHaveAttribute("action", "/sign-out");
+    const signOut = within(menu).getByRole("menuitem", { name: "Sign out" });
+    expect(signOut.closest("form")).toHaveAttribute("action", "/sign-out");
+    expect(signOut.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
 
   it("filters workspaces and closes on Escape", async () => {
