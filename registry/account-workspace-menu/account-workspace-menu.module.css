@@ -239,6 +239,9 @@
   margin: 0;
 }
 .signOut {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 6px 9px;
   border: 1px solid #d5dae3;
   border-radius: 7px;
@@ -247,6 +250,15 @@
   cursor: pointer;
   font-size: 10px;
   font-weight: 800;
+}
+.signOut svg {
+  width: 13px;
+  height: 13px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
 }
 .signOut:hover {
   border-color: #f4a4a4;

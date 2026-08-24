@@ -1,6 +1,10 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { AccountWorkspaceMenu } from "../../registry/account-workspace-menu/account-workspace-menu";
+import {
+  SignOutPrototypeSwitcher,
+  type SignOutVariant,
+} from "./signout-prototype-switcher";
 import "./styles.css";
 
 const workspaces = [
@@ -22,6 +26,25 @@ const workspaces = [
 ];
 
 function Demo() {
+  const readVariant = (): SignOutVariant => {
+    const value = new URLSearchParams(window.location.search).get("variant");
+    return value === "A" || value === "B" ? value : "C";
+  };
+  const [variant, setVariant] = useState<SignOutVariant>(readVariant);
+
+  useEffect(() => {
+    const update = () => setVariant(readVariant());
+    window.addEventListener("popstate", update);
+    return () => window.removeEventListener("popstate", update);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.signoutVariant = variant;
+    return () => {
+      delete document.documentElement.dataset.signoutVariant;
+    };
+  }, [variant]);
+
   return (
     <div className="page">
       <header>
@@ -59,6 +82,7 @@ function Demo() {
           <div>Drop a report here</div>
         </section>
       </main>
+      <SignOutPrototypeSwitcher current={variant} />
     </div>
   );
 }
