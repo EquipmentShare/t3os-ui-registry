@@ -130,9 +130,9 @@ export function AccountWorkspaceMenu({
       if (event.key !== "Escape") return;
       if (!rootRef.current?.contains(event.target as Node)) return;
       if (
-        query &&
         event.target instanceof HTMLInputElement &&
-        event.target.type === "search"
+        event.target.type === "search" &&
+        event.target.value
       ) {
         event.preventDefault();
         setQuery("");
@@ -148,7 +148,7 @@ export function AccountWorkspaceMenu({
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, query]);
+  }, [open]);
 
   if (!current) return null;
 

@@ -30,7 +30,7 @@ export function initials(value: string) {
   return (
     words
       .slice(0, 2)
-      .map((word) => word[0]?.toUpperCase())
+      .map((word) => [...word][0]?.toUpperCase())
       .join("") || "?"
   );
 }

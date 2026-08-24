@@ -191,6 +191,7 @@ describe("account workspace helpers", () => {
   it("creates stable initials", () => {
     expect(initials(" Alex Morgan ")).toBe("AM");
     expect(initials("Operations")).toBe("O");
+    expect(initials("🛠 Workshop")).toBe("🛠W");
     expect(initials(" ")).toBe("?");
   });
 });
