@@ -122,10 +122,16 @@ export function AccountWorkspaceMenu({
   useEffect(() => {
     if (!open) return;
     const onPointerDown = (event: PointerEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) {
+      pointerDownInsideRef.current = Boolean(
+        rootRef.current?.contains(event.target as Node),
+      );
+      if (!pointerDownInsideRef.current) {
         setOpen(false);
         setQuery("");
       }
+    };
+    const onPointerEnd = () => {
+      pointerDownInsideRef.current = false;
     };
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key !== "Escape") return;
@@ -144,9 +150,13 @@ export function AccountWorkspaceMenu({
       triggerRef.current?.focus();
     };
     document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("pointerup", onPointerEnd);
+    document.addEventListener("pointercancel", onPointerEnd);
     document.addEventListener("keydown", onKeyDown);
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("pointerup", onPointerEnd);
+      document.removeEventListener("pointercancel", onPointerEnd);
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
@@ -184,12 +194,6 @@ export function AccountWorkspaceMenu({
       className={`${styles.root}${className ? ` ${className}` : ""}`}
       ref={rootRef}
       style={style}
-      onPointerDownCapture={() => {
-        pointerDownInsideRef.current = true;
-        queueMicrotask(() => {
-          pointerDownInsideRef.current = false;
-        });
-      }}
       onBlur={(event) => {
         if (event.currentTarget.contains(event.relatedTarget)) return;
         if (pointerDownInsideRef.current) return;
